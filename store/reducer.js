@@ -1,4 +1,4 @@
-import { SET_TODO_INPUT, ADD_TODO} from "./constant";
+import { SET_TODO_INPUT, ADD_TODO, REMOVE_TODO} from "./constant";
 
 const iniState = {
     todos: [],
@@ -11,15 +11,35 @@ const iniState = {
 
 function reducer(state, action) {
     switch (action.type) {
-        case SET_TODO_INPUT:            
+        case SET_TODO_INPUT:
+            const updateTask = state.todos.map((todo) => {
+                if (todo.id === action.payload) {
+                    return {...todo, status: "done"};
+                }
+                return todo;
+            });
             return {
                 ...state,
-                todoInput: action.payload
+                todos: updateTask
             }
         case ADD_TODO:
+            if (action.payload.name == null) {
+                alert("Task is required");
+                return state;
+            }
+            state.todos.map((todo) => {
+                if (todo.name == action.payload.name) alert("Task is exist");
+            });
             return {
                 ...state,
                 todos: [...state.todos, action.payload]
+            }
+        case REMOVE_TODO:
+            return {
+                ...state,
+                todos: state.todos.filter(
+                  (todo) => todo.id !== action.payload
+                ),
             }
         default:
             throw new Error('Invalid action');
